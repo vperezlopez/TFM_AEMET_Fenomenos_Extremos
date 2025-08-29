@@ -115,44 +115,38 @@ COLS_COORDS = {
 
 PATH_VAL_CLIM_LIM = 'Valores_Climatologicos_1970_2024_Limpios.csv'
 
-def cargar_dataset_limpio(url: str = PATH_VAL_CLIM_LIM) -> pd.DataFrame:
+def cargar_dataset_limpio(url: str = PATH_VAL_CLIM_LIM, procesar_horas: bool = False) -> pd.DataFrame:
     """Carga el dataset de valores climatológicos con los dtypes adecuados."""
 
-    cols_df = pd.read_csv(url, sep = ';', nrows = 0).columns
+    # El Dataset es tan grande que nos sale un warning si no se indican dtypes, ya que no puede inferirlos
+    # Leemos las columnas usando pares columna-tipo guardados en dtypes_map
+    # Las columnas que no aparecen en dtypes_map serán leídos como 'object'
+    # Para evitar que lea la fecha como 'object' y que la parsee bien, tenemos que excluir fecha de las columnas faltantes
+    
+    cols_df = pd.read_csv(url, sep = ';', nrows = 0).columns[1:] # Excluimos 'fecha'
 
     cols_faltantes = list(set(cols_df) - set(dtypes_map.keys()))
 
-    # print(dtypes_map | {col: 'string' for col in cols_faltantes})
-    
-    # dtype_map = (
-    #     {nombre: 'string' for nombre in COLS_NOMBRES} |
-    #     {entero: 'Int64' for entero in COLS_INTS} |
-    #     {decimal: 'Float64' for decimal in COLS_FLOATS} |
-    #     {hora: 'string' for hora in COLS_HORAS} |
-    #     {categoria: 'category' for categoria in COLS_CATEGORIAS} |
-    #     {otro: 'string' for otro in COLS_HORAS_LIMPIAS + COLS_FECHAHORAS}
-    # )
     
     # Cargamos el CSV con los parámetros por defecto que nos permite
     df = pd.read_csv(
         PATH_VAL_CLIM_LIM,
         sep = ';', #decimal = ',',
-        dtype = dtypes_map | {col: 'string' for col in cols_faltantes},
-        parse_dates = [COL_FECHA],
-        dayfirst=True
+        dtype = dtypes_map | {col: 'object' for col in cols_faltantes}, # Leemos todas las faltantes como object
+        parse_dates = [COL_FECHA]
     )
-    
-    # Ajustes post-carga
-    # for col in COLS_HORAS_LIMPIAS:
-    #     if col in df:
-    #         df[col] = pd.to_datetime(df[col], format='%H:%M', errors='coerce').dt.time
-    
-    # for col in COLS_CATEGORIAS:
-    #     if col in df:
-    #         df[col] = df[col].astype('category')
-    
-    # for col in COLS_FECHAHORAS:
-    #     if col in df:
-    #         df[col] = pd.to_datetime(df[col], errors='coerce')
+
+    if procesar_horas:
+        for col in COLS_HORAS_LIMPIAS:
+            if col in df:
+                df[col] = pd.to_datetime(df[col], format='%H:%M', errors='coerce').dt.time
+        
+        for col in COLS_CATEGORIAS:
+            if col in df:
+                df[col] = df[col].astype('category')
+        
+        for col in COLS_FECHAHORAS:
+            if col in df:
+                df[col] = pd.to_datetime(df[col], errors='coerce')
     
     return df
