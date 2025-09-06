@@ -7,6 +7,7 @@ PATH_DF_TIDY = 'Valores_Climatologicos_1970_2024_Tidy_Lite.csv'
 COL_FECHA = 'fecha'
 
 COL_INDICATIVO = 'indicativo'
+COL_NOMBRE = 'nombre'
 COL_PROVINCIA = 'provincia'
 
 COLS_LOCALIZACION = [
@@ -27,9 +28,16 @@ COLS_COORDS = [
 ]
 
 COL_TMAX = 'tmax'
+COL_TMED = 'tmed'
 COL_TMIN = 'tmin'
-COL_DIR = 'dir'
+COL_RACHA = 'racha'
 COL_PREC = 'prec'
+
+COL_VELMEDIA = 'velmedia'
+COL_SOL = 'sol'
+COL_HRMAX = 'hrMax'
+COL_HRMEDIA = 'hrMedia'
+COL_HRMIN = 'hrMin'
 
 COLS_VARIABLES = [
     'tmax',
