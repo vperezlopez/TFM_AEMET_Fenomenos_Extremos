@@ -2,7 +2,7 @@
 
 PATH_DF_BRUTO = 'Valores_Climatologicos_1970_2024_con_Coordenadas.csv'
 PATH_DF_PROCESADO = 'Valores_Climatologicos_1970_2024_Limpios.csv'
-PATH_DF_TIDY = 'Valores_Climatologicos_1970_2024_Tidy_Lite.csv'
+PATH_DF_TIDY = 'Valores_Climatologicos_1970_2024_Tidy.csv'
 
 COL_FECHA = 'fecha'
 
